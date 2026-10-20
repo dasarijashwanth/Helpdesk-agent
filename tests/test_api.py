@@ -1,7 +1,6 @@
 """Day 1 API tests for helpdesk-agent."""
 
 import pytest
-
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -96,6 +95,28 @@ def test_missing_subject_rejected():
     assert resp.status_code == 422
 
 
+def test_response_shape():
+    data = _post({
+        "ticket_id": "T-1008",
+        "subject": "Refund policy",
+        "body": "Can I get a refund on my monthly plan?",
+    })
+    for key in ("ticket_id", "answer", "citations", "confidence", "action", "handoff_reason"):
+        assert key in data
+    assert 0.0 <= data["confidence"] <= 1.0
+    assert data["action"] in ("answered", "handoff")
+
+
+def test_answer_cites_article_title():
+    data = _post({
+        "ticket_id": "T-1009",
+        "subject": "Enable 2FA",
+        "body": "How do I turn on two-factor authentication for my account?",
+    })
+    assert "Enable two-factor authentication" in data["answer"]
+    assert data["action"] == "answered"
+
+
 @pytest.mark.parametrize("field", ["ticket_id", "subject", "body"])
 def test_whitespace_only_field_rejected(field: str):
     payload = {
@@ -119,25 +140,3 @@ def test_ticket_fields_are_stripped():
 
     assert resp.status_code == 200
     assert resp.json()["ticket_id"] == "T-1011"
-
-
-def test_response_shape():
-    data = _post({
-        "ticket_id": "T-1008",
-        "subject": "Refund policy",
-        "body": "Can I get a refund on my monthly plan?",
-    })
-    for key in ("ticket_id", "answer", "citations", "confidence", "action", "handoff_reason"):
-        assert key in data
-    assert 0.0 <= data["confidence"] <= 1.0
-    assert data["action"] in ("answered", "handoff")
-
-
-def test_answer_cites_article_title():
-    data = _post({
-        "ticket_id": "T-1009",
-        "subject": "Enable 2FA",
-        "body": "How do I turn on two-factor authentication for my account?",
-    })
-    assert "Enable two-factor authentication" in data["answer"]
-    assert data["action"] == "answered"

@@ -1,5 +1,7 @@
 """Day 1 API tests for helpdesk-agent."""
 
+import pytest
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -92,6 +94,31 @@ def test_missing_subject_rejected():
         "body": "No subject here.",
     })
     assert resp.status_code == 422
+
+
+@pytest.mark.parametrize("field", ["ticket_id", "subject", "body"])
+def test_whitespace_only_field_rejected(field: str):
+    payload = {
+        "ticket_id": "T-1010",
+        "subject": "Password reset",
+        "body": "I need help resetting my password.",
+    }
+    payload[field] = "   "
+
+    resp = client.post("/tickets/answer", json=payload)
+
+    assert resp.status_code == 422
+
+
+def test_ticket_fields_are_stripped():
+    resp = client.post("/tickets/answer", json={
+        "ticket_id": "  T-1011  ",
+        "subject": "  Password reset  ",
+        "body": "  How do I reset my password?  ",
+    })
+
+    assert resp.status_code == 200
+    assert resp.json()["ticket_id"] == "T-1011"
 
 
 def test_response_shape():

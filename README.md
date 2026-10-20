@@ -1,8 +1,11 @@
+![Helpdesk Agent workflow banner](assets/helpdesk-agent-banner.png)
+
 # helpdesk-agent
 
-An AI helpdesk agent for the fictional SaaS company StyleDesk, built end to
-end: retrieval over the company knowledge base, grounded answers with
-citations, guardrails, human handoff, and rollback.
+An AI helpdesk workflow for the fictional SaaS company StyleDesk.
+It explores how customer-support automation can retrieve company knowledge,
+produce evidence-backed answers, decide when a human should take over, and
+recover from incorrect or unsafe actions while preserving accountability.
 
 ## Day 1 scope
 
@@ -19,8 +22,17 @@ citations, guardrails, human handoff, and rollback.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+python -m pip install -r requirements.txt
+python -m uvicorn app.main:app --reload
+```
+
+If startup reports `ModuleNotFoundError: No module named 'rank_bm25'`,
+install the requirements and launch the server with the same virtual
+environment interpreter:
+
+```bash
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m uvicorn app.main:app --reload
 ```
 
 ## Usage
@@ -39,10 +51,15 @@ Response: `ticket_id`, `answer`, `citations`, `confidence`,
 ## Tests
 
 ```bash
-pytest -q
+python -m pytest -q
 ```
+
+Using `python -m pytest` ensures pytest runs with the same Python interpreter
+and installed dependencies as the application.
 
 ## Roadmap
 
-Day 2: guardrails + human handoff + rollback. Day 3: end to end wiring.
-Day 4: failure-mode fixes + cost-aware routing. Day 5: full README + demo.
+* Day 2: guardrails + human handoff + rollback.
+* Day 3: end to end wiring.
+* Day 4: failure-mode fixes + cost-aware routing.
+* Day 5: full README + demo.

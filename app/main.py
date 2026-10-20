@@ -3,14 +3,20 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from typing import Annotated
 
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, StringConstraints
 
 from .answer import answer_ticket
 from .kb import KnowledgeBase
 
 app = FastAPI(title="helpdesk-agent", version="0.1.0")
+
+NonEmptyString = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True, min_length=1),
+]
 
 
 @lru_cache(maxsize=1)
@@ -19,9 +25,9 @@ def get_kb() -> KnowledgeBase:
 
 
 class TicketRequest(BaseModel):
-    ticket_id: str = Field(min_length=1)
-    subject: str = Field(min_length=1)
-    body: str = Field(min_length=1)
+    ticket_id: NonEmptyString
+    subject: NonEmptyString
+    body: NonEmptyString
 
 
 class TicketResponse(BaseModel):

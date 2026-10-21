@@ -47,10 +47,14 @@ def test_account_question_answered():
 
 
 def test_bug_question_answered():
+    # Rewritten on Day 3: the original phrasing ("40 MB video") scores
+    # 0.9347, just under the calibrated 0.94 operating point, so it now
+    # hands off. This clearer documented phrasing covers the same intent.
+    # The original phrasing's handoff is pinned in tests/test_day3.py.
     data = _post({
         "ticket_id": "T-1003",
-        "subject": "Attachments will not upload",
-        "body": "Uploading a 40 MB video fails every time, what are the limits?",
+        "subject": "Attachment size limit and file types",
+        "body": "What is the attachment size limit per file and which file types are allowed, like PDF, PNG, or CSV?",
     })
     assert data["action"] == "answered"
     assert data["citations"][0]["article_id"] == "g4"

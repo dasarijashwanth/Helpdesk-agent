@@ -26,7 +26,14 @@ from .guardrails import (
 )
 from .kb import KnowledgeBase
 
-CONFIDENCE_THRESHOLD = 0.35
+# Operating point chosen on the Day 3 golden set (data/golden_set.json):
+# the highest-coverage threshold whose answered precision stays at or
+# above 95 percent. At the old 0.35 the sweep measured 88.2 percent
+# precision and 92 percent action accuracy; at 0.94 it measures 95.2
+# percent precision and 97 percent action accuracy. The confidence is a
+# normalized BM25 score, not a calibrated probability. Full sweep:
+# evals/results_day3.md (regenerate with python -m evals.run_eval).
+CONFIDENCE_THRESHOLD = 0.94
 PROVIDER_VERSION = "mock-extractive-0.2.0"
 PROMPT_VERSION = "styledesk-prompt-v2"
 
@@ -95,9 +102,11 @@ def pipeline_ticket(
     # 1. Selective-automation routing (injection -> escalate inside classify).
     action, routing_reason = classify(text, top_article)
 
-    # 2. Retrieval confidence gate (BM25 score only).
+    # 2. Retrieval confidence gate (BM25 score only). It only demotes an
+    # "answered" decision: a policy handoff from classify keeps its more
+    # informative routing reason instead of being overwritten by the gate.
     confidence = confidence_from_score(top_score) if top_score > 0 else 0.0
-    if action != "escalate":
+    if action == "answered":
         if not results or top_score <= 0:
             action, routing_reason = "handoff", "low_retrieval_confidence"
         elif confidence < CONFIDENCE_THRESHOLD:

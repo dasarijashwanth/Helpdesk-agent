@@ -51,9 +51,6 @@ produces becomes a DRAFT in a persistent queue. Nothing is auto-sent.
   unsent drafts.
 - Duplicate intake: identical ticket text within 10 minutes returns the
   existing queue id, making client retries idempotent.
-- Golden set expanded to 40 tickets in AgentEval (`helpdesk_v1.json`);
-  `evals/failure_demos.py` runs 6 failure/recovery scenarios with a
-  pass/fail report.
 
 ## Setup
 

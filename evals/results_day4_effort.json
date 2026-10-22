@@ -1,0 +1,30 @@
+{
+  "at_shipped_threshold": {
+    "threshold": 0.94,
+    "total_tickets": 100,
+    "drafts_needing_review": 63,
+    "wrong_drafts": 3,
+    "handoffs": 30,
+    "escalations": 7,
+    "reviewer_minutes": 123.0,
+    "handling_minutes": 310.0,
+    "total_human_minutes": 433.0,
+    "fully_manual_baseline_minutes": 800.0,
+    "minutes_saved": 367.0,
+    "effort_saved_pct": 45.9
+  },
+  "at_cost_optimal_threshold": {
+    "threshold": 0.96,
+    "total_tickets": 100,
+    "drafts_needing_review": 56,
+    "wrong_drafts": 0,
+    "handoffs": 37,
+    "escalations": 7,
+    "reviewer_minutes": 56.0,
+    "handling_minutes": 366.0,
+    "total_human_minutes": 422.0,
+    "fully_manual_baseline_minutes": 800.0,
+    "minutes_saved": 378.0,
+    "effort_saved_pct": 47.2
+  }
+}

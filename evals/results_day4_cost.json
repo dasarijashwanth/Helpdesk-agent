@@ -1,0 +1,348 @@
+{
+  "model_minutes": {
+    "answered_correct": 1.0,
+    "answered_wrong": 21.0,
+    "handoff": 8.0,
+    "escalate": 10.0
+  },
+  "usd_per_minute": 0.5,
+  "rows": [
+    {
+      "threshold": 0.0,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.1,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.2,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.3,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.35,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.4,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.5,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.6,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.7,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.8,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.85,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.9,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 8,
+        "handoff": 25,
+        "escalate": 7
+      },
+      "total_minutes": 498.0,
+      "expected_minutes_per_ticket": 4.98,
+      "expected_usd_per_ticket": 2.49,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92
+    },
+    {
+      "threshold": 0.91,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 6,
+        "handoff": 27,
+        "escalate": 7
+      },
+      "total_minutes": 472.0,
+      "expected_minutes_per_ticket": 4.72,
+      "expected_usd_per_ticket": 2.36,
+      "coverage": 0.66,
+      "answered_precision": 0.9090909090909091,
+      "action_accuracy": 0.94
+    },
+    {
+      "threshold": 0.92,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 6,
+        "handoff": 27,
+        "escalate": 7
+      },
+      "total_minutes": 472.0,
+      "expected_minutes_per_ticket": 4.72,
+      "expected_usd_per_ticket": 2.36,
+      "coverage": 0.66,
+      "answered_precision": 0.9090909090909091,
+      "action_accuracy": 0.94
+    },
+    {
+      "threshold": 0.93,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 4,
+        "handoff": 29,
+        "escalate": 7
+      },
+      "total_minutes": 446.0,
+      "expected_minutes_per_ticket": 4.46,
+      "expected_usd_per_ticket": 2.23,
+      "coverage": 0.64,
+      "answered_precision": 0.9375,
+      "action_accuracy": 0.96
+    },
+    {
+      "threshold": 0.94,
+      "total": 100,
+      "counts": {
+        "answered_correct": 60,
+        "answered_wrong": 3,
+        "handoff": 30,
+        "escalate": 7
+      },
+      "total_minutes": 433.0,
+      "expected_minutes_per_ticket": 4.33,
+      "expected_usd_per_ticket": 2.165,
+      "coverage": 0.63,
+      "answered_precision": 0.9523809523809523,
+      "action_accuracy": 0.97
+    },
+    {
+      "threshold": 0.95,
+      "total": 100,
+      "counts": {
+        "answered_correct": 59,
+        "answered_wrong": 2,
+        "handoff": 32,
+        "escalate": 7
+      },
+      "total_minutes": 427.0,
+      "expected_minutes_per_ticket": 4.27,
+      "expected_usd_per_ticket": 2.135,
+      "coverage": 0.61,
+      "answered_precision": 0.9672131147540983,
+      "action_accuracy": 0.97
+    },
+    {
+      "threshold": 0.96,
+      "total": 100,
+      "counts": {
+        "answered_correct": 56,
+        "answered_wrong": 0,
+        "handoff": 37,
+        "escalate": 7
+      },
+      "total_minutes": 422.0,
+      "expected_minutes_per_ticket": 4.22,
+      "expected_usd_per_ticket": 2.11,
+      "coverage": 0.56,
+      "answered_precision": 1.0,
+      "action_accuracy": 0.96
+    },
+    {
+      "threshold": 0.97,
+      "total": 100,
+      "counts": {
+        "answered_correct": 40,
+        "answered_wrong": 0,
+        "handoff": 53,
+        "escalate": 7
+      },
+      "total_minutes": 534.0,
+      "expected_minutes_per_ticket": 5.34,
+      "expected_usd_per_ticket": 2.67,
+      "coverage": 0.4,
+      "answered_precision": 1.0,
+      "action_accuracy": 0.8
+    },
+    {
+      "threshold": 0.98,
+      "total": 100,
+      "counts": {
+        "answered_correct": 6,
+        "answered_wrong": 0,
+        "handoff": 87,
+        "escalate": 7
+      },
+      "total_minutes": 772.0,
+      "expected_minutes_per_ticket": 7.72,
+      "expected_usd_per_ticket": 3.86,
+      "coverage": 0.06,
+      "answered_precision": 1.0,
+      "action_accuracy": 0.46
+    }
+  ],
+  "chosen_operating_point": {
+    "threshold": 0.96,
+    "total": 100,
+    "counts": {
+      "answered_correct": 56,
+      "answered_wrong": 0,
+      "handoff": 37,
+      "escalate": 7
+    },
+    "total_minutes": 422.0,
+    "expected_minutes_per_ticket": 4.22,
+    "expected_usd_per_ticket": 2.11,
+    "coverage": 0.56,
+    "answered_precision": 1.0,
+    "action_accuracy": 0.96,
+    "precision_floor_met": true
+  }
+}

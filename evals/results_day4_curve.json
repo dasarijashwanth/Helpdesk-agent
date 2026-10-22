@@ -1,0 +1,188 @@
+{
+  "points": [
+    {
+      "threshold": 0.0,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.1,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.2,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.3,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.35,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.4,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.5,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.6,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.7,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.8,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.85,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.9,
+      "coverage": 0.68,
+      "answered_precision": 0.8823529411764706,
+      "action_accuracy": 0.92,
+      "answered": 68,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.91,
+      "coverage": 0.66,
+      "answered_precision": 0.9090909090909091,
+      "action_accuracy": 0.94,
+      "answered": 66,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.92,
+      "coverage": 0.66,
+      "answered_precision": 0.9090909090909091,
+      "action_accuracy": 0.94,
+      "answered": 66,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.93,
+      "coverage": 0.64,
+      "answered_precision": 0.9375,
+      "action_accuracy": 0.96,
+      "answered": 64,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.94,
+      "coverage": 0.63,
+      "answered_precision": 0.9523809523809523,
+      "action_accuracy": 0.97,
+      "answered": 63,
+      "answered_correct": 60
+    },
+    {
+      "threshold": 0.95,
+      "coverage": 0.61,
+      "answered_precision": 0.9672131147540983,
+      "action_accuracy": 0.97,
+      "answered": 61,
+      "answered_correct": 59
+    },
+    {
+      "threshold": 0.96,
+      "coverage": 0.56,
+      "answered_precision": 1.0,
+      "action_accuracy": 0.96,
+      "answered": 56,
+      "answered_correct": 56
+    },
+    {
+      "threshold": 0.97,
+      "coverage": 0.4,
+      "answered_precision": 1.0,
+      "action_accuracy": 0.8,
+      "answered": 40,
+      "answered_correct": 40
+    },
+    {
+      "threshold": 0.98,
+      "coverage": 0.06,
+      "answered_precision": 1.0,
+      "action_accuracy": 0.46,
+      "answered": 6,
+      "answered_correct": 6
+    }
+  ],
+  "highlights": {
+    "precision_floor": 0.95,
+    "best_precision_point": {
+      "threshold": 0.96,
+      "coverage": 0.56,
+      "answered_precision": 1.0,
+      "action_accuracy": 0.96,
+      "answered": 56,
+      "answered_correct": 56
+    },
+    "max_coverage_at_floor": {
+      "threshold": 0.94,
+      "coverage": 0.63,
+      "answered_precision": 0.9523809523809523,
+      "action_accuracy": 0.97,
+      "answered": 63,
+      "answered_correct": 60
+    },
+    "steepest_coverage_drop": {
+      "from_threshold": 0.97,
+      "to_threshold": 0.98,
+      "coverage_drop": 0.34
+    }
+  }
+}

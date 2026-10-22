@@ -77,6 +77,39 @@ produces becomes a DRAFT in a persistent queue. Nothing is auto-sent.
   contradiction cases slips through when one policy article falls out
   of the top 5 retrieval results.
 
+## Day 4 scope
+
+Run with `python -m evals.run_day4`; writes JSON and Markdown results
+for all three analyses. Every number below is from real pipeline runs
+over the golden set.
+
+- Quality-vs-coverage curve (`evals/curve.py`,
+  `evals/results_day4_curve.md`): the full tradeoff behind the Day 3
+  operating point. Answered precision climbs from 88.2 percent at
+  threshold 0.35 to 95.2 percent at 0.94 and 100 percent at 0.96, while
+  coverage falls from 68 to 63 to 56 percent. Scores cluster near the
+  top of the range: the steepest single step drops coverage 34 points
+  between thresholds 0.97 and 0.98.
+- Cost-aware routing (`evals/cost_routing.py`,
+  `evals/results_day4_cost.md`): outcomes are priced in human minutes
+  (correct draft 1 min skim review, wrong draft 21 min with rework,
+  handoff 8 min, escalation 10 min; $30/hour loaded). Expected cost per
+  ticket: 4.98 min at the old 0.35 threshold, 4.33 min at the shipped
+  0.94, and 4.22 min at the cost-optimal 0.96, the cheapest threshold
+  whose answered precision stays at or above 95 percent (it reaches
+  100 percent, with zero wrong answers). The cost view and the Day 3
+  quality view nearly agree: the two candidate points sit 0.11 min per
+  ticket apart.
+- Reviewer effort (`evals/reviewer_effort.py`,
+  `evals/results_day4_effort.md`): at the shipped 0.94 point, the 100
+  golden tickets take 433 human minutes (63 draft skims, 3 wrong-draft
+  reworks, 30 handoffs, 7 escalations) against a fully manual baseline
+  of 800 minutes, a 45.9 percent saving. At the cost-optimal 0.96
+  point: 422 minutes, 47.2 percent saved. Estimates from labeled data
+  under the stated minute assumptions, not a time study.
+- Tests: 49 passing (8 new Day 4 tests cover the curve shape, the cost
+  model math, and the effort accounting).
+
 ## Setup
 
 ```bash
@@ -130,5 +163,5 @@ and installed dependencies as the application.
 
 Day 2: guardrails + human handoff + rollback (done). Day 3: golden set to
 100 tickets + threshold calibration + recall@5 (done). Day 4: quality-vs-coverage
-curve + cost-aware routing + reviewer-effort measurement. Day 5: full
+curve + cost-aware routing + reviewer-effort measurement (done). Day 5: full
 README + demo story with before/after numbers.

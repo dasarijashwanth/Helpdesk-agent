@@ -4,6 +4,38 @@ An AI helpdesk copilot for StyleDesk, a fictional B2B SaaS company. It drafts an
 
 Live demo: https://dasarijashwanth.github.io/Helpdesk-agent/
 
+## Quick start
+
+```bash
+git clone https://github.com/dasarijashwanth/Helpdesk-agent.git
+cd Helpdesk-agent
+python -m venv ~/.venv-week3
+~/.venv-week3/bin/python -m pip install -r requirements.txt
+~/.venv-week3/bin/python -m uvicorn app.main:app --reload
+```
+
+On Windows, activate the virtual environment first (`.venv-week3\Scripts\activate`) and then run `python -m uvicorn app.main:app --reload`.
+
+Verify it is up:
+
+```bash
+curl http://localhost:8000/health
+```
+
+You should get `{"status": "ok", "kb_articles": 30, "service": "helpdesk-agent"}`. Interactive API docs are at http://localhost:8000/docs.
+
+Answer your first ticket:
+
+```bash
+curl -X POST http://localhost:8000/tickets/answer -H "Content-Type: application/json" -d '{
+  "ticket_id": "T-1001",
+  "subject": "How do I update my credit card?",
+  "body": "My card expired and I need to replace the payment method."
+}'
+```
+
+No API keys are needed anywhere in this project. Answers are built by a deterministic extractive mock provider from the knowledge base, so the whole pipeline runs offline.
+
 ## Key results
 
 Every number below comes from a real run over a 100-ticket human-reviewed golden set, and the result files are in `evals/` so anyone can regenerate them.
@@ -46,6 +78,7 @@ That discipline is what saves reviewer time. At 0.94, 100 tickets take 433 human
 - SQLite for the approval queue
 - HTTP client: `httpx`
 - Tests: `pytest`
+- Dependencies are pinned only by minimum version in `requirements.txt`: fastapi, uvicorn, pydantic, rank_bm25, httpx, pytest.
 
 ## How it works
 
@@ -87,37 +120,79 @@ This section is the contract the code implements. It is deliberately explicit, b
 
 **Why 0.94 shipped instead of the cost-optimal 0.96.** The Day 4 cost model says 0.96 is slightly cheaper: 4.22 vs 4.33 expected minutes per ticket, with zero wrong answers. But 0.96 buys that by giving up 7 points of coverage (63 to 56 percent): 7 more tickets in every 100 skip the draft path entirely and cost a full 8-minute manual handling each, and the saving works out to 0.11 minutes per ticket. The shipped point keeps more tickets in the cheap draft-and-skim path while still clearing the 95 percent precision floor set on Day 3. It is a coverage choice, not a cost oversight, and the curve and cost files show both points so the trade-off can be re-decided with real traffic data.
 
-## Getting started
+## API reference
 
-```bash
-git clone https://github.com/dasarijashwanth/Helpdesk-agent.git
-cd Helpdesk-agent
-python -m venv ~/.venv-week3
-~/.venv-week3/bin/python -m pip install -r requirements.txt
-```
+Base URL when running locally: http://localhost:8000. Interactive docs: http://localhost:8000/docs.
 
-Run the server:
+### Answer a ticket
 
-```bash
-~/.venv-week3/bin/python -m uvicorn app.main:app --reload
-```
+`POST /tickets/answer`
 
-On Windows, activate the virtual environment first (`.venv-week3\Scripts\activate`) and then run `python -m uvicorn app.main:app --reload`.
+Request body (all three fields are required, non-empty strings):
 
-Run the tests:
+| Field | Type | Notes |
+|---|---|---|
+| `ticket_id` | string | Caller-supplied ticket id, echoed back in the response |
+| `subject` | string | Ticket subject line |
+| `body` | string | Ticket body text |
+| `simulate_delay_s` | number, optional | Testing hook for timeout drills, 0 to 30 seconds. Never set in production use |
 
-```bash
-~/.venv-week3/bin/python -m pytest -q
-```
+Response fields:
 
-Current state: 49 passing. Using `python -m pytest` ensures pytest runs with the same Python interpreter and installed dependencies as the application.
+| Field | Meaning |
+|---|---|
+| `ticket_id` | Echo of the request id |
+| `answer` | Draft answer text, or empty on a handoff or escalation |
+| `citations` | Retrieved articles the draft is grounded in |
+| `confidence` | Normalized BM25 retrieval score, not a probability |
+| `action` | `answered`, `handoff`, or `escalate` |
+| `handoff_reason` | Why the ticket went to a human, or null when answered |
+| `queue_id` | Id of the stored queue item |
+| `duplicate` | True when identical ticket text arrived within the last 10 minutes and the existing queue id was returned |
+| `auto_sendable` | True only for a whitelisted how-to intent that matched its documented article. Still a draft in this build, never an auto-send |
+| `routing_reason` | Policy or pipeline reason stored on the queue item |
+| `needs_review` | True when the draft contains claims no retrieved article supports |
 
-Run the evaluations:
+### Health
 
-```bash
-~/.venv-week3/bin/python -m evals.run_eval    # Day 3: golden-set eval + threshold sweep
-~/.venv-week3/bin/python -m evals.run_day4    # Day 4: curve + cost routing + reviewer effort
-```
+`GET /health` returns `{"status": "ok", "kb_articles": 30, "service": "helpdesk-agent"}`.
+
+### Approval queue
+
+`GET /queue` lists open items only (statuses `pending`, `requeued`, `edited`).
+
+`GET /queue/{id}` returns one queue item with its evidence, routing reason, confidence, model and prompt versions, timings, and state-change history.
+
+`GET /queue/{id}/handoff` returns the structured takeover summary for a human reviewer.
+
+State transitions (all `POST`):
+
+| Endpoint | Body | Effect |
+|---|---|---|
+| `/queue/{id}/approve` | none | Approve the draft |
+| `/queue/{id}/send` | none | Send an approved draft |
+| `/queue/{id}/edit` | `{"text": "..."}` | Replace the draft text |
+| `/queue/{id}/requeue` | `{"reason": "..."}` | Return the item to the open queue |
+| `/queue/{id}/assign` | `{"assignee": "..."}` | Assign the item to a reviewer |
+| `/queue/{id}/supersede` | `{"reason": "..."}` | Withdraw a sent reply and reopen the ticket as a pending draft, history preserved on both items |
+| `/queue/{id}/invalidate` | `{"reason": "..."}` | Discard an unsent draft |
+
+An unknown queue id returns HTTP 404 with detail `queue item {id} not found`.
+
+## Configuration
+
+There are no environment variables. Every operating point is a constant in code, so changing one means editing the constant and rerunning the tests and evals:
+
+| Setting | Value | Location |
+|---|---|---|
+| Confidence threshold (shipped operating point) | 0.94 | `CONFIDENCE_THRESHOLD` in `app/answer.py` |
+| Evidence-overlap gate | 0.25 | `EVIDENCE_OVERLAP_THRESHOLD` in `app/guardrails.py` |
+| Duplicate intake window | 600 seconds (10 minutes) | `DUPLICATE_WINDOW_SECONDS` in `app/queue.py` |
+| Approval queue database | `data/helpdesk.db` (SQLite, created at runtime) | `DEFAULT_DB_PATH` in `app/queue.py` |
+| Knowledge base | 30 articles | `data/tickets.json` |
+| Auto-reply whitelist | 5 how-to intents | `data/auto_whitelist.json` |
+
+The server port is a uvicorn flag, not app config: use `--port 8001` if port 8000 is taken.
 
 ## Usage
 
@@ -131,8 +206,6 @@ curl -X POST http://localhost:8000/tickets/answer -H "Content-Type: application/
 }'
 ```
 
-Response fields: `ticket_id`, `answer`, `citations`, `confidence`, `action` (`answered`, `handoff`, or `escalate`), `handoff_reason`, `queue_id`, `auto_sendable`, `routing_reason`, and `needs_review`.
-
 Review a draft:
 
 ```bash
@@ -142,11 +215,18 @@ curl -X POST http://localhost:8000/queue/1/send
 curl http://localhost:8000/queue/1/handoff       # takeover summary
 ```
 
+Run the evaluations:
+
+```bash
+~/.venv-week3/bin/python -m evals.run_eval    # Day 3: golden-set eval + threshold sweep
+~/.venv-week3/bin/python -m evals.run_day4    # Day 4: curve + cost routing + reviewer effort
+```
+
 ## Demo walkthrough
 
 Try the live demo first: https://dasarijashwanth.github.io/Helpdesk-agent/
 
-Then run the server (see Getting started) and follow four tickets, four different fates. Each scenario also exists as an automated test, so `pytest -q` replays the whole story without the server.
+Then run the server (see Quick start) and follow four tickets, four different fates. Each scenario also exists as an automated test, so `pytest -q` replays the whole story without the server.
 
 **1. A covered how-to gets a confident draft.** A customer asks how to reset their password. Retrieval finds the documented article, confidence clears 0.94, and the whitelist matches the `reset_password` intent, so the response comes back `action: answered` with citations and `auto_sendable: true`. The answer still lands in the queue as a pending draft; a reviewer skims it (the 1-minute path in the cost model) and approves the send. Test: `test_whitelist_marks_howto_auto_sendable` in `tests/test_day2.py`.
 
@@ -177,6 +257,32 @@ Day 4, curve, cost, and effort (`evals/results_day4_curve.md`, `evals/results_da
 - Reviewer effort: at the shipped 0.94 point, the 100 golden tickets take 433 human minutes (63 draft skims, 3 wrong-draft reworks, 30 handoffs, 7 escalations) against a fully manual baseline of 800 minutes, a 45.9 percent saving. At 0.96: 422 minutes, 47.2 percent saved. These are estimates from labeled data under the stated minute assumptions, not a time study.
 - Tests: 49 passing. The Day 4 tests cover the curve shape, the cost model math, and the effort accounting.
 
+## Evaluation methodology
+
+How the numbers are produced, so a reviewer can judge what they do and do not prove:
+
+- **Golden set.** 100 tickets, human-reviewed, each with a labeled expected action (answered, handoff, or escalate) and a source article where one applies. The 60 covered tickets are 2 per knowledge base article. The other 40 are deliberately hard: 15 topics the knowledge base does not cover, 10 cases a policy routes to a human, 8 cases where two policies contradict each other, and 7 prompt injections.
+- **Retrieval.** BM25 over the 30 articles, top 5 retrieved. Recall@5 is the share of covered cases where the expected article appears in the top 5. It is 1.0000 here, which means retrieval is not the bottleneck on this set, not that it never misses on unseen phrasings.
+- **Confidence.** The score is a normalized BM25 retrieval score. It is swept across thresholds on the golden set, and 0.94 shipped because it is the highest coverage point whose answered precision stays at or above the 95 percent floor. It is an operating point, not a probability, and it is measured on this golden set only.
+- **Answered precision.** Correct answers among tickets the agent answered. **Action accuracy.** Predicted action matching the labeled action, over all 100 tickets.
+- **Cost and effort.** Each outcome is priced in human minutes under stated assumptions (correct draft skim 1 min, wrong draft rework 21 min, handoff 8 min, escalation 10 min, $30/hour loaded). The 433 minute figure is an estimate from labeled data under those assumptions, not a time study.
+- **Regenerating.** `python -m evals.run_eval` reproduces the Day 3 calibration and sweep. `python -m evals.run_day4` reproduces the curve, cost routing, and reviewer effort files. Every result file in `evals/` is regenerable from the code and the golden set; no number in this README comes from anywhere else.
+
+## Tests
+
+```bash
+~/.venv-week3/bin/python -m pytest -q
+```
+
+Current state: 49 passing. `pytest.ini` sets `pythonpath = .` and `testpaths = tests`, so run from the repo root. Using `python -m pytest` ensures pytest runs with the same Python interpreter and installed dependencies as the application.
+
+What the tests cover, by file:
+
+- `tests/test_api.py`: HTTP layer, including the knowledge base gap handoff.
+- `tests/test_day2.py`: approval queue, guardrails, whitelist behavior, recovery paths.
+- `tests/test_day3.py`: golden-set eval, threshold calibration, injection escalation over all 7 injection cases.
+- `tests/test_day4.py`: curve shape, cost model math, effort accounting.
+
 ## Project structure
 
 ```
@@ -203,6 +309,35 @@ demo/
 requirements.txt
 pytest.ini
 ```
+
+## Troubleshooting and FAQ
+
+**Do I need an API key?**
+No. The provider is a deterministic extractive mock that builds answers from the top retrieved article. The whole pipeline runs offline.
+
+**Where is my ticket data stored?**
+In `data/helpdesk.db`, a SQLite file created at runtime. PII (emails, phone numbers, card-like sequences) is redacted before anything is stored, and the original ticket text is never persisted.
+
+**I submitted the same ticket twice and got the same queue id. Is that a bug?**
+No, that is the duplicate guard. Identical ticket text within 10 minutes returns the existing queue id (`duplicate: true` in the response) so a client retry never creates a second draft.
+
+**I get 404 on a queue id.**
+The item does not exist. The response detail is `queue item {id} not found`. Note that `GET /queue` lists open items only; superseded and invalidated items are terminal and no longer listed.
+
+**Port 8000 is already in use.**
+Start uvicorn on another port: `python -m uvicorn app.main:app --reload --port 8001`.
+
+**`ModuleNotFoundError: No module named 'app'` when running tests.**
+Run from the repo root. `pytest.ini` sets `pythonpath = .` for the test run; running pytest from another directory skips that config.
+
+**Does confidence 0.94 mean the answer is 94% likely correct?**
+No. Confidence is a normalized BM25 retrieval score, an operating point chosen by sweep on the golden set. Answered precision at that point is 95.2%, which is a separate measured number, not a property of the score itself.
+
+**Can a draft send itself?**
+Not in this build. Every answer lands in the queue as a draft, and `auto_sendable` is only a label a future deployment could act on. Nothing customer-facing auto-sends today.
+
+**Why does a ticket with a confident-looking answer still hand off?**
+Policy routing beats confidence. Billing disputes, bug reports, and account changes always go to a human, and the confidence gate is not allowed to overwrite a policy routing reason. A weak evidence overlap can also force a handoff even when the raw score looks high.
 
 ## Roadmap
 
